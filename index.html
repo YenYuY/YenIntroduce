@@ -1,447 +1,1390 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>標準時間與分貝計</title>
-  <style>
-    :root {
-      --bg: #0d1117;
-      --panel: #161b22;
-      --text: #e6edf3;
-      --muted: #9da7b3;
-      --accent: #2f81f7;
-      --ok: #3fb950;
-      --warn: #d29922;
-      --danger: #f85149;
-      --border: #30363d;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yen Yu | Portfolio</title>
+    <meta
+      name="description"
+      content="Yen Yu professional portfolio featuring iOS apps, web tools, enterprise IT, and digital delivery."
+    />
+    <style>
+      :root {
+        --bg: #edf3f8;
+        --bg-soft: #f8fbfd;
+        --surface: rgba(255, 255, 255, 0.9);
+        --surface-strong: #ffffff;
+        --ink: #0f172a;
+        --muted: #475569;
+        --line: rgba(15, 23, 42, 0.1);
+        --brand: #0f766e;
+        --brand-deep: #115e59;
+        --accent: #2563eb;
+        --navy: #0f172a;
+        --navy-soft: #172235;
+        --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+        --radius-xl: 28px;
+        --radius-lg: 20px;
+        --radius-md: 14px;
+      }
 
-    * {
-      box-sizing: border-box;
-    }
+      * {
+        box-sizing: border-box;
+      }
 
-    body {
-      margin: 0;
-      font-family: "Noto Sans TC", "PingFang TC", sans-serif;
-      color: var(--text);
-      color-scheme: dark;
-      background:
-        radial-gradient(circle at 10% 10%, #1f2631, transparent 45%),
-        linear-gradient(135deg, #0d1117 0%, #111827 100%);
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-    }
+      html {
+        scroll-behavior: smooth;
+      }
 
-    .app {
-      width: min(860px, 100%);
-      display: grid;
-      gap: 16px;
-    }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Avenir Next", "IBM Plex Sans", "PingFang TC", "Noto Sans TC", sans-serif;
+        background:
+          radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.12), transparent 24%),
+          radial-gradient(circle at 100% 10%, rgba(15, 118, 110, 0.12), transparent 20%),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 48%, #f4f8fc 100%);
+      }
 
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
-    }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.12;
+        background-image:
+          linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 92%);
+      }
 
-    h1, h2 {
-      margin: 0 0 12px;
-      line-height: 1.2;
-    }
+      a {
+        color: inherit;
+      }
 
-    h1 {
-      font-size: 1.35rem;
-    }
+      button {
+        font: inherit;
+      }
 
-    h2 {
-      font-size: 1.05rem;
-    }
+      .page {
+        width: min(1180px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 18px 0 84px;
+      }
 
-    .date {
-      font-size: 1.05rem;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
+      .topbar {
+        position: sticky;
+        top: 10px;
+        z-index: 20;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        padding: 14px 18px;
+        margin-bottom: 26px;
+        border: 1px solid rgba(255, 255, 255, 0.84);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(14px);
+        box-shadow: 0 12px 34px rgba(15, 23, 42, 0.06);
+      }
 
-    .time {
-      font-size: clamp(2rem, 6vw, 3.3rem);
-      font-variant-numeric: tabular-nums;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
 
-    .meta {
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        font-weight: 800;
+        color: #eff6ff;
+        background: linear-gradient(145deg, var(--navy), #1e293b);
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+      }
 
-    .status-ok {
-      color: var(--ok);
-    }
+      .brand-copy strong,
+      .brand-copy span {
+        display: block;
+      }
 
-    .status-warn {
-      color: var(--warn);
-    }
+      .brand-copy strong {
+        font-size: 1rem;
+        letter-spacing: 0.08em;
+      }
 
-    .row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
+      .brand-copy span {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
 
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 0.95rem;
-      background: var(--accent);
-      color: #fff;
-      cursor: pointer;
-    }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
 
-    button.secondary {
-      background: #4b5563;
-    }
+      .nav {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+      .nav a {
+        text-decoration: none;
+        color: var(--muted);
+        font-size: 0.94rem;
+        font-weight: 600;
+      }
 
-    .db-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
+      .nav a:hover {
+        color: var(--navy);
+      }
 
-    .db-now {
-      font-size: clamp(1.7rem, 5vw, 2.4rem);
-      font-variant-numeric: tabular-nums;
-    }
+      .lang-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(248, 250, 252, 0.94);
+      }
 
-    .meter {
-      width: 100%;
-      height: 20px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: #0f141b;
-      overflow: hidden;
-    }
+      .lang-switch button {
+        border: 0;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        transition: background 0.2s ease, color 0.2s ease;
+      }
 
-    .meter-fill {
-      width: 0%;
-      height: 100%;
-      background: var(--ok);
-      transition: width 120ms linear, background-color 120ms linear;
-    }
+      .lang-switch button.active {
+        color: #eff6ff;
+        background: linear-gradient(145deg, var(--navy), #1e293b);
+      }
 
-    .calibration {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 0.93rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+        gap: 20px;
+        align-items: stretch;
+      }
 
-    input[type="range"] {
-      width: min(360px, 100%);
-    }
-  </style>
-</head>
-<body>
-  <main class="app">
-    <section class="card">
-      <h1>標準時間與日期</h1>
-      <div id="date" class="date">--</div>
-      <div id="time" class="time">--:--:--</div>
-      <div id="source" class="meta">資料來源：同步中...</div>
-      <div id="clock-status" class="meta">正在連線國家標準時間伺服器...</div>
-      <div class="row">
-        <button id="sync-btn" type="button">立即重新同步</button>
-      </div>
-    </section>
+      .panel {
+        border: 1px solid rgba(255, 255, 255, 0.82);
+        border-radius: var(--radius-xl);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
 
-    <section class="card">
-      <h2>分貝計</h2>
-      <div class="db-head">
-        <div id="db-value" class="db-now">0.0 dB</div>
-        <div id="db-peak" class="meta">峰值：0.0 dB</div>
-      </div>
-      <div class="meter" aria-label="分貝強度">
-        <div id="meter-fill" class="meter-fill"></div>
-      </div>
-      <div class="row">
-        <button id="start-btn" type="button">啟動麥克風</button>
-        <button id="stop-btn" class="secondary" type="button" disabled>停止</button>
-      </div>
-      <label class="calibration" for="calibration">
-        校正值（依裝置可微調）：
-        <input id="calibration" type="range" min="70" max="120" step="1" value="95">
-        <span id="calibration-value">95</span>
-      </label>
-      <div class="meta">提醒：此分貝值為網頁估算，若需精準 dB SPL，請使用校正過的實體分貝計。</div>
-    </section>
-  </main>
+      .hero-main {
+        padding: 40px;
+        color: #e5eefb;
+        background:
+          radial-gradient(circle at top right, rgba(37, 99, 235, 0.24), transparent 28%),
+          linear-gradient(145deg, var(--navy), var(--navy-soft) 58%, #11314a);
+      }
 
-  <script>
-    const STDTIME_ENDPOINT = "https://www.stdtime.gov.tw/Home/GetServerTime";
+      .eyebrow {
+        display: inline-flex;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.14);
+        color: #cbd5e1;
+        font-size: 0.84rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+      }
 
-    const dateEl = document.getElementById("date");
-    const timeEl = document.getElementById("time");
-    const sourceEl = document.getElementById("source");
-    const clockStatusEl = document.getElementById("clock-status");
-    const syncBtn = document.getElementById("sync-btn");
+      .hero-main h1 {
+        margin: 18px 0 12px;
+        font-size: clamp(2.9rem, 6vw, 5.2rem);
+        line-height: 0.92;
+        letter-spacing: -0.05em;
+        color: #f8fafc;
+      }
 
-    const clockState = {
-      offsetMs: 0,
-      synced: false,
-      syncLatencyMs: null,
-      lastServerMs: null,
-      hasTriedSync: false,
-      error: ""
-    };
+      .lead {
+        margin: 0;
+        max-width: 700px;
+        color: #cbd5e1;
+        line-height: 1.88;
+        font-size: 1.02rem;
+      }
 
-    function formatTaipeiDate(date) {
-      return new Intl.DateTimeFormat("zh-TW", {
-        timeZone: "Asia/Taipei",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        weekday: "long"
-      }).format(date);
-    }
+      .hero-cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
 
-    function formatTaipeiTime(date) {
-      return new Intl.DateTimeFormat("zh-TW", {
-        timeZone: "Asia/Taipei",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true
-      }).format(date);
-    }
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 12px 18px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
 
-    function parseServerTime(raw) {
-      const trimmed = raw.trim();
-      try {
-        const parsed = JSON.parse(trimmed);
-        if (typeof parsed === "string") {
-          return Date.parse(parsed);
+      .button.primary {
+        color: #eff6ff;
+        background: linear-gradient(145deg, var(--brand), var(--brand-deep));
+        box-shadow: 0 14px 28px rgba(15, 118, 110, 0.22);
+      }
+
+      .button.secondary {
+        border: 1px solid rgba(203, 213, 225, 0.2);
+        color: #f8fafc;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 26px;
+      }
+
+      .metric {
+        padding: 15px;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .metric strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 1.15rem;
+        color: #f8fafc;
+      }
+
+      .metric span {
+        display: block;
+        color: #cbd5e1;
+        font-size: 0.92rem;
+        line-height: 1.65;
+      }
+
+      .hero-side {
+        display: grid;
+        align-content: space-between;
+        gap: 18px;
+        padding: 28px;
+        background:
+          radial-gradient(circle at bottom right, rgba(15, 118, 110, 0.12), transparent 30%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 250, 252, 0.96));
+      }
+
+      .hero-side h2 {
+        margin: 0 0 8px;
+        font-size: 1.3rem;
+      }
+
+      .hero-side p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.82;
+      }
+
+      .info-stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .info-card {
+        padding: 17px 18px;
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        border-radius: 18px;
+        background: rgba(248, 250, 252, 0.92);
+      }
+
+      .info-card strong,
+      .info-card span,
+      .info-card a {
+        display: block;
+      }
+
+      .info-card strong {
+        margin-bottom: 6px;
+      }
+
+      .info-card span,
+      .info-card a {
+        color: var(--muted);
+        line-height: 1.7;
+        text-decoration: none;
+        word-break: break-word;
+      }
+
+      .info-card a:hover,
+      .project-links a:hover,
+      .contact-links a:hover {
+        color: var(--navy);
+      }
+
+      .section {
+        margin-top: 24px;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(1.9rem, 3.2vw, 2.7rem);
+        letter-spacing: -0.04em;
+      }
+
+      .section-head p {
+        margin: 0;
+        max-width: 620px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .section-head p:empty,
+      .footer p:empty {
+        display: none;
+      }
+
+      .summary-grid,
+      .two-col,
+      .project-grid,
+      .meta-grid {
+        display: grid;
+        gap: 18px;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1.05fr 0.95fr;
+      }
+
+      .two-col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .project-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .content-card,
+      .skill-card,
+      .project-card,
+      .timeline-card,
+      .meta-card {
+        padding: 24px;
+        background: var(--surface-strong);
+      }
+
+      .content-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.92;
+      }
+
+      .list-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .chip-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 11px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        background: rgba(248, 250, 252, 0.96);
+        font-size: 0.88rem;
+        color: var(--ink);
+      }
+
+      .skill-card h3,
+      .project-card h3,
+      .timeline-card h3,
+      .meta-card h3 {
+        margin: 0 0 12px;
+        font-size: 1.18rem;
+      }
+
+      .skill-card ul,
+      .project-card ul,
+      .timeline-card ul,
+      .meta-card ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.85;
+      }
+
+      .project-card p,
+      .timeline-card p {
+        margin: 0 0 14px;
+        color: var(--muted);
+        line-height: 1.82;
+      }
+
+      .project-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        padding: 26px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+      }
+
+      .project-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 4px;
+        background: linear-gradient(180deg, var(--accent), var(--brand));
+      }
+
+      .project-card.featured {
+        grid-column: span 2;
+        background:
+          radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 26%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.98));
+      }
+
+      .project-card h3 {
+        font-size: 1.5rem;
+      }
+
+      .project-card ul {
+        margin-bottom: 16px;
+      }
+
+      .tag {
+        display: inline-flex;
+        margin-bottom: 10px;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .timeline-card {
+        border-left: 4px solid rgba(37, 99, 235, 0.24);
+      }
+
+      .timeline-card .period {
+        display: inline-block;
+        margin-bottom: 10px;
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .project-links,
+      .contact-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .project-links a,
+      .contact-links a {
+        text-decoration: none;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      .project-links a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+        padding: 8px 12px;
+        border: 1px solid rgba(37, 99, 235, 0.16);
+        border-radius: 999px;
+        background: rgba(239, 246, 255, 0.9);
+      }
+
+      .footer {
+        margin-top: 26px;
+        padding: 12px 0 0;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(26px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .summary-grid,
+        .two-col,
+        .project-grid,
+        .meta-grid {
+          grid-template-columns: 1fr;
         }
-      } catch (_) {
-        return Date.parse(trimmed);
-      }
-      return Number.NaN;
-    }
 
-    async function syncClock() {
-      const started = Date.now();
-      syncBtn.disabled = true;
-      clockState.hasTriedSync = true;
-
-      try {
-        const res = await fetch(STDTIME_ENDPOINT, { cache: "no-store" });
-        if (!res.ok) {
-          throw new Error("HTTP " + res.status);
+        .project-card.featured {
+          grid-column: span 1;
         }
 
-        const body = await res.text();
-        const serverMs = parseServerTime(body);
-        if (Number.isNaN(serverMs)) {
-          throw new Error("時間格式解析失敗");
+        .metric-grid {
+          grid-template-columns: 1fr;
         }
 
-        const ended = Date.now();
-        const midpoint = started + (ended - started) / 2;
-
-        clockState.offsetMs = serverMs - midpoint;
-        clockState.synced = true;
-        clockState.syncLatencyMs = ended - started;
-        clockState.lastServerMs = serverMs;
-        clockState.error = "";
-      } catch (error) {
-        clockState.synced = false;
-        clockState.error = error instanceof Error ? error.message : "未知錯誤";
-      } finally {
-        syncBtn.disabled = false;
-        renderClockMeta();
-      }
-    }
-
-    function renderClock() {
-      const baseNow = Date.now();
-      const nowMs = clockState.synced ? baseNow + clockState.offsetMs : baseNow;
-      const now = new Date(nowMs);
-
-      dateEl.textContent = formatTaipeiDate(now);
-      timeEl.textContent = formatTaipeiTime(now);
-    }
-
-    function renderClockMeta() {
-      if (!clockState.hasTriedSync) {
-        sourceEl.textContent = "資料來源：同步中...";
-        sourceEl.className = "meta";
-        clockStatusEl.textContent = "正在連線國家標準時間伺服器...";
-        clockStatusEl.className = "meta";
-        return;
+        .section-head {
+          flex-direction: column;
+        }
       }
 
-      if (clockState.synced) {
-        sourceEl.textContent = "資料來源：https://www.stdtime.gov.tw/Home/GetServerTime";
-        sourceEl.className = "meta status-ok";
+      @media (max-width: 760px) {
+        .page {
+          width: min(calc(100vw - 18px), 1180px);
+          padding-top: 10px;
+        }
 
-        const latest = new Date(clockState.lastServerMs);
-        clockStatusEl.textContent =
-          "同步成功，延遲約 " + clockState.syncLatencyMs + " ms，最近同步時間：" + formatTaipeiTime(latest);
-        clockStatusEl.className = "meta status-ok";
-        return;
+        .topbar {
+          position: static;
+          align-items: start;
+          flex-direction: column;
+          border-radius: 24px;
+        }
+
+        .topbar-right {
+          width: 100%;
+          align-items: start;
+          flex-direction: column;
+        }
+
+        .nav {
+          gap: 14px;
+        }
+
+        .hero-main,
+        .hero-side,
+        .content-card,
+        .skill-card,
+        .project-card,
+        .timeline-card,
+        .meta-card {
+          padding: 22px;
+        }
+
+        .hero-main h1 {
+          font-size: clamp(2.5rem, 12vw, 4rem);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="topbar reveal">
+        <div class="brand">
+          <div class="brand-mark">Y</div>
+          <div class="brand-copy">
+            <strong>YEN YU</strong>
+            <span id="brand-role"></span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <nav class="nav" aria-label="Primary">
+            <a href="#projects" id="nav-projects"></a>
+            <a href="#summary" id="nav-summary"></a>
+            <a href="#skills" id="nav-skills"></a>
+            <a href="#experience" id="nav-experience"></a>
+          </nav>
+          <div class="lang-switch" aria-label="Language switcher">
+            <button type="button" data-lang="zh">中文</button>
+            <button type="button" data-lang="en">EN</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="hero">
+        <article class="panel hero-main reveal">
+          <span class="eyebrow" id="hero-eyebrow"></span>
+          <h1 id="hero-title"></h1>
+          <p class="lead" id="hero-lead"></p>
+          <div class="hero-cta">
+            <a class="button primary" href="#projects" id="hero-cta-primary"></a>
+            <a class="button secondary" href="#experience" id="hero-cta-secondary"></a>
+          </div>
+          <div class="metric-grid">
+            <div class="metric">
+              <strong id="metric-1-value"></strong>
+              <span id="metric-1-label"></span>
+            </div>
+            <div class="metric">
+              <strong id="metric-2-value"></strong>
+              <span id="metric-2-label"></span>
+            </div>
+            <div class="metric">
+              <strong id="metric-3-value"></strong>
+              <span id="metric-3-label"></span>
+            </div>
+          </div>
+        </article>
+
+        <aside class="panel hero-side reveal">
+          <div>
+            <h2 id="hero-side-title"></h2>
+            <p id="hero-side-body"></p>
+          </div>
+          <div class="info-stack">
+            <div class="info-card">
+              <strong id="contact-title"></strong>
+              <a href="mailto:yen.yu@otakuyy.com">yen.yu@otakuyy.com</a>
+              <a href="https://www.linkedin.com/in/yen-yu-122034221/" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+            </div>
+            <div class="info-card">
+              <strong id="portfolio-title"></strong>
+              <a href="https://yenyuy.github.io/YYPDFTools/" target="_blank" rel="noreferrer noopener">YYYPDF</a>
+              <a href="https://yenyuy.github.io/AirShare/" target="_blank" rel="noreferrer noopener">AirShare</a>
+            </div>
+            <div class="info-card">
+              <strong id="store-title"></strong>
+              <a href="https://apps.apple.com/tw/app/airshare-wifi-photo-download/id6758705202" target="_blank" rel="noreferrer noopener">AirShare on the App Store</a>
+              <a href="https://apps.apple.com/tw/app/yencamera/id6759236602" target="_blank" rel="noreferrer noopener">YenCamera on the App Store</a>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="projects" class="section reveal">
+        <div class="section-head">
+          <h2 id="projects-heading"></h2>
+          <p id="projects-intro"></p>
+        </div>
+        <div class="project-grid" id="projects-grid"></div>
+      </section>
+
+      <section id="summary" class="section reveal">
+        <div class="section-head">
+          <h2 id="summary-heading"></h2>
+          <p id="summary-intro"></p>
+        </div>
+        <div class="summary-grid">
+          <article class="panel content-card">
+            <p id="summary-body"></p>
+          </article>
+          <aside class="panel content-card">
+            <div class="list-grid">
+              <div>
+                <h3 id="focus-title"></h3>
+                <div class="chip-list" id="focus-list"></div>
+              </div>
+              <div>
+                <h3 id="tooling-title"></h3>
+                <div class="chip-list" id="tooling-list"></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="skills" class="section reveal">
+        <div class="section-head">
+          <h2 id="skills-heading"></h2>
+          <p id="skills-intro"></p>
+        </div>
+        <div class="two-col" id="skills-grid"></div>
+      </section>
+
+      <section id="experience" class="section reveal">
+        <div class="section-head">
+          <h2 id="experience-heading"></h2>
+          <p id="experience-intro"></p>
+        </div>
+        <div class="two-col" id="experience-grid"></div>
+      </section>
+
+      <section id="background" class="section reveal">
+        <div class="section-head">
+          <h2 id="background-heading"></h2>
+          <p id="background-intro"></p>
+        </div>
+        <div class="meta-grid">
+          <article class="panel meta-card">
+            <h3 id="education-title"></h3>
+            <ul id="education-list"></ul>
+          </article>
+          <article class="panel meta-card">
+            <h3 id="certifications-title"></h3>
+            <ul id="certifications-list"></ul>
+          </article>
+          <article class="panel meta-card">
+            <h3 id="languages-title"></h3>
+            <ul id="languages-list"></ul>
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer reveal">
+        <div class="contact-links">
+          <a href="mailto:yen.yu@otakuyy.com">yen.yu@otakuyy.com</a>
+          <a href="https://www.linkedin.com/in/yen-yu-122034221/" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+          <a href="https://yenyuy.github.io/YYPDFTools/" target="_blank" rel="noreferrer noopener">YYYPDF</a>
+          <a href="https://yenyuy.github.io/AirShare/" target="_blank" rel="noreferrer noopener">AirShare</a>
+        </div>
+        <p id="footer-copy"></p>
+      </footer>
+    </div>
+
+    <script>
+      const content = {
+        zh: {
+          pageTitle: "Yen Yu | Portfolio",
+          metaDescription: "Yen Yu 的專業作品集網站，聚焦 iOS App、Web 工具、企業 IT 與數位交付能力。",
+          brandRole: "Portfolio / IT & Product Delivery",
+          nav: {
+            summary: "概況",
+            skills: "能力",
+            projects: "作品",
+            experience: "經歷"
+          },
+          hero: {
+            eyebrow: "Portfolio / IT Operations / Product Delivery",
+            title: "把 IT 實務與產品思維，做成真正可交付的作品。",
+            lead:
+              "這個網站以作品集為主，集中展示我在 iOS App、Web 工具、企業 IT 與製造環境數位化上的實作成果，以及我如何把需求轉成可以實際落地的產品與系統。",
+            ctaPrimary: "瀏覽精選作品",
+            ctaSecondary: "查看職涯經歷",
+            metrics: [
+              { value: "2 Apps", label: "已上架公開的 iOS 產品" },
+              { value: "Web Tools", label: "以瀏覽器為主的實用工具與產品頁" },
+              { value: "Manufacturing IT", label: "企業 IT、OT/IT 與現場數位化經驗" }
+            ]
+          },
+          heroSide: {
+            title: "網站定位",
+            body:
+              "這是一個偏作品導向的專業網站。重點不是列出所有經歷，而是用實際產品、工具與交付能力，讓訪客快速理解我的專業輪廓與可落地的技術價值。"
+          },
+          labels: {
+            contact: "Contact",
+            portfolio: "Selected Links",
+            store: "Published Apps"
+          },
+          summary: {
+            heading: "專業概況",
+            intro: "",
+            body:
+              "我是 Yen Yu，一位兼具企業 IT 實務與產品開發能力的資訊專業人員。我的工作經驗涵蓋 IT 基礎架構、資安、網路架構、製造端 OT/IT 整合、ERP 支援、流程自動化與內部工具開發。在基礎架構與營運之外，我也獨立開發並上架 App Store iOS 應用，包含產品規劃、程式開發、測試、上架送審、合規與後續迭代，能在 IT、製造、生產、管理與商業需求之間扮演穩定的橋接角色。",
+            focusTitle: "Focus",
+            toolingTitle: "Tools",
+            focus: [
+              "IT Infrastructure & Operations",
+              "Cybersecurity",
+              "OT / IT Integration",
+              "Manufacturing IT",
+              "Workflow Automation",
+              "iOS App Development"
+            ],
+            tooling: [
+              "Swift / SwiftUI",
+              "Power Automate",
+              "Python",
+              "PowerShell",
+              "HTML / JavaScript",
+              "Windows Server / AD",
+              "VMware / Hyper-V",
+              "Microsoft 365"
+            ]
+          },
+          skills: {
+            heading: "核心能力",
+            intro: "",
+            items: [
+              {
+                title: "IT Infrastructure & Operations",
+                points: [
+                  "企業 IT 基礎架構管理",
+                  "製造業 / 智慧工廠 IT 維運",
+                  "OT / IT 網路整合",
+                  "IT 服務管理與資產授權管理"
+                ]
+              },
+              {
+                title: "Cybersecurity",
+                points: [
+                  "弱點評估與修補",
+                  "系統與環境安全強化",
+                  "防火牆與 VPN 管理",
+                  "端點防護、備份與資安意識推廣"
+                ]
+              },
+              {
+                title: "Network Architecture",
+                points: [
+                  "LAN / WAN 規劃與優化",
+                  "無線網路建置",
+                  "交換器與路由器設定",
+                  "產線網路佈建與疑難排解"
+                ]
+              },
+              {
+                title: "Enterprise Systems & Automation",
+                points: [
+                  "Microsoft 365、Active Directory、Windows Server",
+                  "VMware / Hyper-V、SCCM",
+                  "鼎新 ERP 支援",
+                  "Power Automate、Python、PowerShell 與命令列自動化"
+                ]
+              }
+            ]
+          },
+          projects: {
+            heading: "精選作品",
+            intro: "",
+            items: [
+              {
+                tag: "App Store Published",
+                title: "AirShare",
+                body:
+                  "AirShare 是一款為 iPhone 設計的區網分享工具，目標是讓使用者不用接線、不用額外安裝桌面軟體，就能在同一個網路下快速把照片與影片提供給電腦端存取。這個專案涵蓋產品構想、原生 iOS 開發、測試、上架送審，以及對外產品頁整理。",
+                points: [
+                  "以 LAN URL 方式讓電腦瀏覽器直接存取 iPhone 內容",
+                  "獨立完成 App Store 發佈、送審與後續維護流程",
+                  "同步製作產品介紹頁，降低使用者理解成本"
+                ],
+                links: [
+                  { label: "App Store", href: "https://apps.apple.com/tw/app/airshare-wifi-photo-download/id6758705202" },
+                  { label: "Website", href: "https://yenyuy.github.io/AirShare/" }
+                ]
+              },
+              {
+                tag: "Web Productivity Tool",
+                title: "YYYPDF",
+                body:
+                  "YYYPDF 是一個以瀏覽器為核心的文件處理工具，聚焦在 PDF 合併、分割、旋轉、轉檔與其他常見整理需求。它的重點不是做複雜系統，而是把常用操作變成打開網頁就能完成的工作流，適合日常辦公與臨時文件處理情境。",
+                points: [
+                  "整合多種常見 PDF 與格式轉換需求於單一介面",
+                  "採前端為主的工具形式，降低使用門檻與部署成本",
+                  "以實用、快速、可立即上手為主要設計方向"
+                ],
+                links: [
+                  { label: "Website", href: "https://yenyuy.github.io/YYPDFTools/" }
+                ]
+              },
+              {
+                tag: "Product Development",
+                title: "YenCamera",
+                body:
+                  "YenCamera 是一款偏工作現場使用的拍照工具，強調打開即拍、拍完即存，並在照片上自動加入時間資訊。這類產品看似簡單，但真正的價值在於把拍攝、標記、保存三個步驟壓縮成一個穩定流程，適合需要快速留存記錄的情境。",
+                points: [
+                  "開啟 App 後直接進入拍攝流程，減少操作步驟",
+                  "自動將時間戳記寫入照片，提升紀錄可讀性",
+                  "完成拍攝後直接存入相簿，符合現場工具需求"
+                ],
+                links: [
+                  { label: "App Store", href: "https://apps.apple.com/tw/app/yencamera/id6759236602" }
+                ]
+              },
+              {
+                tag: "Cross-disciplinary Delivery",
+                title: "企業 IT 到產品網站的一體化能力",
+                body:
+                  "除了企業 IT 基礎架構與系統維運，我也持續把自己的工具與想法做成可對外展示、可實際使用的產品。從功能規劃、介面整理、文案說明到公開發佈，整體流程都能獨立完成，這讓技術成果不只停留在內部使用層級。",
+                points: [
+                  "能同時處理內部系統實務與外部產品呈現",
+                  "把技術功能整理成一般人看得懂的體驗與說明",
+                  "具備從開發、包裝到交付的完整執行能力"
+                ],
+                links: [
+                  { label: "AirShare", href: "https://yenyuy.github.io/AirShare/" },
+                  { label: "YYYPDF", href: "https://yenyuy.github.io/YYPDFTools/" }
+                ]
+              }
+            ]
+          },
+          experience: {
+            heading: "職涯經歷",
+            intro: "",
+            items: [
+              {
+                title: "Brewery IT Supervisor",
+                company: "Heineken Taiwan",
+                period: "2020 年 8 月 - 至今",
+                points: [
+                  "負責酒廠環境的 IT 基礎架構維運",
+                  "設計與部署辦公室及產線網路架構",
+                  "推動 OT / IT 整合與無線網路擴建",
+                  "主導鼎新 ERP 在酒廠營運中的導入",
+                  "推進資安修補與系統強化",
+                  "使用 Power Automate 與腳本導入自動化",
+                  "開發內部網頁工具，改善 IT 與商務流程",
+                  "擔任生產、管理與 IT 團隊之間的橋樑"
+                ]
+              },
+              {
+                title: "IT Engineer",
+                company: "Bonso Enterprise Co., Ltd.",
+                period: "2018 年 11 月 - 2020 年 7 月",
+                points: [
+                  "企業基礎架構支援與伺服器維護",
+                  "防火牆與伺服器部署規劃",
+                  "提供 Heineken Taiwan 現場 IT 支援",
+                  "參與台北捷運機場線專案中的伺服器與 ML PC 部署"
+                ]
+              },
+              {
+                title: "IT System Engineer",
+                company: "GangYu Co., Ltd.",
+                period: "2018 年 8 月 - 2018 年 11 月",
+                points: [
+                  "LED 系統顧問與部署",
+                  "停車偵測與車牌辨識系統導入",
+                  "現場 IT 基礎架構維護"
+                ]
+              }
+            ]
+          },
+          background: {
+            heading: "背景資訊",
+            intro: "",
+            educationTitle: "教育",
+            certificationTitle: "證照",
+            languageTitle: "語言",
+            education: ["資訊管理學士，蘭陽技術學院"],
+            certifications: ["ITIL Foundation", "MOCC Certification"],
+            languages: ["中文：母語", "英文：工作專業程度", "日文：基礎會話"]
+          },
+          footer: ""
+        },
+        en: {
+          pageTitle: "Yen Yu | Portfolio",
+          metaDescription: "Yen Yu professional portfolio featuring iOS apps, web tools, enterprise IT, and digital delivery.",
+          brandRole: "Portfolio / IT & Product Delivery",
+          nav: {
+            summary: "Profile",
+            skills: "Capabilities",
+            projects: "Work",
+            experience: "Experience"
+          },
+          hero: {
+            eyebrow: "Portfolio / IT Operations / Product Delivery",
+            title: "Turning IT execution and product thinking into deliverable work.",
+            lead:
+              "This site is structured as a portfolio first. It highlights my work across iOS apps, web tools, enterprise IT, and manufacturing digitalization, with an emphasis on how ideas become usable products and reliable systems.",
+            ctaPrimary: "View Selected Work",
+            ctaSecondary: "View Experience",
+            metrics: [
+              { value: "2 Apps", label: "Public iOS products released" },
+              { value: "Web Tools", label: "Browser-based utilities and product pages" },
+              { value: "Manufacturing IT", label: "Enterprise IT, OT/IT, and site digitalization experience" }
+            ]
+          },
+          heroSide: {
+            title: "Site Focus",
+            body:
+              "This is a portfolio-led professional site. The goal is not to list every detail of my background, but to show actual products, tools, and delivery capability in a way that makes my technical value immediately clear."
+          },
+          labels: {
+            contact: "Contact",
+            portfolio: "Selected Links",
+            store: "Published Apps"
+          },
+          summary: {
+            heading: "Professional Profile",
+            intro: "",
+            body:
+              "I am a versatile IT professional with hands-on experience in IT infrastructure, cybersecurity, network architecture, OT/IT integration, ERP support, workflow automation, and internal tool development within manufacturing environments. Beyond infrastructure operations, I independently design and publish iOS applications on the App Store, managing the full product lifecycle from concept and development to testing, compliance, release, and iteration. I am comfortable bridging IT, production, security, management, and business functions to deliver stable, secure, and scalable digital environments.",
+            focusTitle: "Focus",
+            toolingTitle: "Tools",
+            focus: [
+              "IT Infrastructure & Operations",
+              "Cybersecurity",
+              "OT / IT Integration",
+              "Manufacturing IT",
+              "Workflow Automation",
+              "iOS App Development"
+            ],
+            tooling: [
+              "Swift / SwiftUI",
+              "Power Automate",
+              "Python",
+              "PowerShell",
+              "HTML / JavaScript",
+              "Windows Server / AD",
+              "VMware / Hyper-V",
+              "Microsoft 365"
+            ]
+          },
+          skills: {
+            heading: "Core Capabilities",
+            intro: "",
+            items: [
+              {
+                title: "IT Infrastructure & Operations",
+                points: [
+                  "Enterprise IT infrastructure management",
+                  "Manufacturing and smart factory IT operations",
+                  "OT / IT network integration",
+                  "IT service management, asset and license management"
+                ]
+              },
+              {
+                title: "Cybersecurity",
+                points: [
+                  "Vulnerability assessment and remediation",
+                  "Security hardening",
+                  "Firewall and VPN management",
+                  "Endpoint protection, backup strategy, and security awareness"
+                ]
+              },
+              {
+                title: "Network Architecture",
+                points: [
+                  "LAN / WAN design and optimization",
+                  "Wireless network deployment",
+                  "Switch and router configuration",
+                  "Production line network setup and troubleshooting"
+                ]
+              },
+              {
+                title: "Enterprise Systems & Automation",
+                points: [
+                  "Microsoft 365, Active Directory, and Windows Server",
+                  "VMware / Hyper-V and SCCM",
+                  "DingXing ERP support",
+                  "Power Automate, Python, PowerShell, and command-line automation"
+                ]
+              }
+            ]
+          },
+          projects: {
+            heading: "Selected Work",
+            intro: "",
+            items: [
+              {
+                tag: "App Store Published",
+                title: "AirShare",
+                body:
+                  "AirShare is an iPhone app built for local network media sharing. The core idea is simple: let users expose photos and videos from their iPhone to a computer on the same network without cables or extra desktop software. The project covers product concept, native iOS implementation, testing, App Store release work, and the supporting public-facing product page.",
+                points: [
+                  "Uses a LAN URL so desktop browsers can access iPhone media directly",
+                  "Independently handled release, submission, and maintenance on the App Store",
+                  "Built supporting product communication to make onboarding clearer"
+                ],
+                links: [
+                  { label: "App Store", href: "https://apps.apple.com/tw/app/airshare-wifi-photo-download/id6758705202" },
+                  { label: "Website", href: "https://yenyuy.github.io/AirShare/" }
+                ]
+              },
+              {
+                tag: "Web Productivity Tool",
+                title: "YYYPDF",
+                body:
+                  "YYYPDF is a browser-based document utility focused on everyday PDF tasks such as merging, splitting, rotating, converting, and lightweight file handling. The value of the project is not complexity for its own sake, but reducing common document work into a tool that users can open and use immediately in the browser.",
+                points: [
+                  "Brings multiple common PDF workflows into one accessible interface",
+                  "Keeps deployment lightweight through a web-first delivery model",
+                  "Designed for speed, clarity, and practical day-to-day use"
+                ],
+                links: [{ label: "Website", href: "https://yenyuy.github.io/YYPDFTools/" }]
+              },
+              {
+                tag: "Product Development",
+                title: "YenCamera",
+                body:
+                  "YenCamera is a utility-focused iOS app designed for fast capture and record keeping. It opens directly into camera use, applies timestamp information to the image, and saves the result immediately. The strength of the product is not visual complexity, but compressing capture, marking, and storage into a reliable single flow.",
+                points: [
+                  "Launches straight into capture to reduce interaction overhead",
+                  "Applies timestamp information automatically for clearer records",
+                  "Saves directly to the photo library as part of the same workflow"
+                ],
+                links: [{ label: "App Store", href: "https://apps.apple.com/tw/app/yencamera/id6759236602" }]
+              },
+              {
+                tag: "Cross-disciplinary Delivery",
+                title: "From Enterprise IT to Public Product Delivery",
+                body:
+                  "Alongside enterprise IT infrastructure and systems work, I also turn tools into public-facing products that people can actually understand and use. That includes feature shaping, interface presentation, product copy, and release execution, so the work moves beyond internal implementation into complete delivery.",
+                points: [
+                  "Able to move from internal systems work to external product delivery",
+                  "Combines technical execution with clear product communication",
+                  "Owns planning, implementation, packaging, and release end to end"
+                ],
+                links: [
+                  { label: "AirShare", href: "https://yenyuy.github.io/AirShare/" },
+                  { label: "YYYPDF", href: "https://yenyuy.github.io/YYPDFTools/" }
+                ]
+              }
+            ]
+          },
+          experience: {
+            heading: "Experience",
+            intro: "",
+            items: [
+              {
+                title: "Brewery IT Supervisor",
+                company: "Heineken Taiwan",
+                period: "Aug 2020 - Present",
+                points: [
+                  "Lead IT infrastructure operations across the brewery environment",
+                  "Design and deploy network architecture for office and production lines",
+                  "Oversee OT/IT integration and wireless expansion",
+                  "Lead DingXing ERP deployment across brewery operations",
+                  "Drive cybersecurity remediation and system hardening initiatives",
+                  "Implement automation with Power Automate and scripting",
+                  "Develop internal web tools to streamline IT and business workflows",
+                  "Bridge production, management, and IT teams"
+                ]
+              },
+              {
+                title: "IT Engineer",
+                company: "Bonso Enterprise Co., Ltd.",
+                period: "Nov 2018 - Jul 2020",
+                points: [
+                  "Enterprise infrastructure support and server maintenance",
+                  "Firewall and server deployment planning",
+                  "On-site IT support for Heineken Taiwan",
+                  "Server and ML PC deployment for the Taipei Airport MRT project"
+                ]
+              },
+              {
+                title: "IT System Engineer",
+                company: "GangYu Co., Ltd.",
+                period: "Aug 2018 - Nov 2018",
+                points: [
+                  "LED system consulting and deployment",
+                  "Parking detection and LPR system implementation",
+                  "Site IT infrastructure maintenance"
+                ]
+              }
+            ]
+          },
+          background: {
+            heading: "Background",
+            intro: "",
+            educationTitle: "Education",
+            certificationTitle: "Certifications",
+            languageTitle: "Languages",
+            education: ["Bachelor's Degree in Information Management, Lanyang Institute of Technology"],
+            certifications: ["ITIL Foundation", "MOCC Certification"],
+            languages: [
+              "Mandarin Chinese - Native",
+              "English - Professional working proficiency",
+              "Japanese - Basic conversational proficiency"
+            ]
+          },
+          footer: ""
+        }
+      };
+
+      const langButtons = Array.from(document.querySelectorAll("[data-lang]"));
+      const docTitle = document.querySelector("title");
+      const metaDescription = document.querySelector('meta[name="description"]');
+
+      function detectLanguage() {
+        const saved = localStorage.getItem("preferred-language");
+        if (saved === "zh" || saved === "en") {
+          return saved;
+        }
+
+        const browserLangs = navigator.languages && navigator.languages.length
+          ? navigator.languages
+          : [navigator.language || "en"];
+
+        return browserLangs.some((lang) => String(lang).toLowerCase().startsWith("zh")) ? "zh" : "en";
       }
 
-      sourceEl.textContent = "資料來源：本機時間（無法連線標準時間時的備援）";
-      sourceEl.className = "meta status-warn";
-      clockStatusEl.textContent = "同步失敗：" + clockState.error;
-      clockStatusEl.className = "meta status-warn";
-    }
-
-    syncBtn.addEventListener("click", syncClock);
-
-    setInterval(renderClock, 250);
-    setInterval(syncClock, 60 * 1000);
-    renderClock();
-    renderClockMeta();
-    syncClock();
-
-    const dbValueEl = document.getElementById("db-value");
-    const dbPeakEl = document.getElementById("db-peak");
-    const meterFillEl = document.getElementById("meter-fill");
-    const startBtn = document.getElementById("start-btn");
-    const stopBtn = document.getElementById("stop-btn");
-    const calibrationInput = document.getElementById("calibration");
-    const calibrationValueEl = document.getElementById("calibration-value");
-
-    let audioContext = null;
-    let analyser = null;
-    let stream = null;
-    let frameId = null;
-    let waveform = null;
-    let currentDb = 0;
-    let peakDb = 0;
-    let lastMeterUpdateMs = 0;
-    const METER_UPDATE_INTERVAL_MS = 120;
-
-    function meterColor(db) {
-      if (db < 50) return "var(--ok)";
-      if (db < 80) return "var(--warn)";
-      return "var(--danger)";
-    }
-
-    function estimateDb() {
-      analyser.getFloatTimeDomainData(waveform);
-      let sumSquares = 0;
-      for (let i = 0; i < waveform.length; i += 1) {
-        sumSquares += waveform[i] * waveform[i];
-      }
-      const rms = Math.sqrt(sumSquares / waveform.length);
-      const dbfs = 20 * Math.log10(rms || 1e-8);
-      const calibration = Number(calibrationInput.value);
-      return Math.max(0, Math.min(120, dbfs + calibration));
-    }
-
-    function drawMeter(now = performance.now()) {
-      if (now - lastMeterUpdateMs < METER_UPDATE_INTERVAL_MS) {
-        frameId = requestAnimationFrame(drawMeter);
-        return;
-      }
-      lastMeterUpdateMs = now;
-
-      const rawDb = estimateDb();
-      const alpha = rawDb > currentDb ? 0.1 : 0.04;
-      currentDb = currentDb * (1 - alpha) + rawDb * alpha;
-      peakDb = Math.max(currentDb, peakDb - 0.2);
-
-      dbValueEl.textContent = currentDb.toFixed(1) + " dB";
-      dbPeakEl.textContent = "峰值：" + peakDb.toFixed(1) + " dB";
-      meterFillEl.style.width = (currentDb / 120 * 100).toFixed(1) + "%";
-      meterFillEl.style.backgroundColor = meterColor(currentDb);
-
-      frameId = requestAnimationFrame(drawMeter);
-    }
-
-    async function startMeter() {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert("此瀏覽器不支援麥克風 API。");
-        return;
+      function fillChipList(containerId, items) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = items.map((item) => `<span class="chip">${item}</span>`).join("");
       }
 
-      startBtn.disabled = true;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        audioContext = new window.AudioContext();
-        const sourceNode = audioContext.createMediaStreamSource(stream);
-        analyser = audioContext.createAnalyser();
-        analyser.fftSize = 2048;
-        sourceNode.connect(analyser);
-        waveform = new Float32Array(analyser.fftSize);
-
-        currentDb = 0;
-        peakDb = 0;
-        lastMeterUpdateMs = 0;
-        drawMeter();
-
-        stopBtn.disabled = false;
-      } catch (error) {
-        startBtn.disabled = false;
-        alert("無法啟動麥克風：" + (error instanceof Error ? error.message : "未知錯誤"));
-      }
-    }
-
-    async function stopMeter() {
-      if (frameId) {
-        cancelAnimationFrame(frameId);
-        frameId = null;
+      function fillSimpleList(containerId, items) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = items.map((item) => `<li>${item}</li>`).join("");
       }
 
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
+      function renderSkills(items) {
+        const grid = document.getElementById("skills-grid");
+        grid.innerHTML = items
+          .map(
+            (item) => `
+              <article class="panel skill-card">
+                <h3>${item.title}</h3>
+                <ul>${item.points.map((point) => `<li>${point}</li>`).join("")}</ul>
+              </article>
+            `
+          )
+          .join("");
       }
 
-      if (audioContext) {
-        await audioContext.close();
-        audioContext = null;
+      function renderProjects(items) {
+        const grid = document.getElementById("projects-grid");
+        grid.innerHTML = items
+          .map(
+            (item, index) => `
+              <article class="panel project-card${index === 0 ? " featured" : ""}">
+                <span class="tag">${item.tag}</span>
+                <h3>${item.title}</h3>
+                <p>${item.body}</p>
+                <ul>${item.points.map((point) => `<li>${point}</li>`).join("")}</ul>
+                ${
+                  item.links.length
+                    ? `<div class="project-links">${item.links
+                        .map(
+                          (link) =>
+                            `<a href="${link.href}" target="_blank" rel="noreferrer noopener">${link.label}</a>`
+                        )
+                        .join("")}</div>`
+                    : ""
+                }
+              </article>
+            `
+          )
+          .join("");
       }
 
-      analyser = null;
-      waveform = null;
-      startBtn.disabled = false;
-      stopBtn.disabled = true;
-    }
-
-    startBtn.addEventListener("click", startMeter);
-    stopBtn.addEventListener("click", stopMeter);
-
-    calibrationInput.addEventListener("input", () => {
-      calibrationValueEl.textContent = calibrationInput.value;
-    });
-
-    window.addEventListener("beforeunload", () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+      function renderExperience(items) {
+        const grid = document.getElementById("experience-grid");
+        grid.innerHTML = items
+          .map(
+            (item) => `
+              <article class="panel timeline-card">
+                <span class="period">${item.period}</span>
+                <h3>${item.title}</h3>
+                <p>${item.company}</p>
+                <ul>${item.points.map((point) => `<li>${point}</li>`).join("")}</ul>
+              </article>
+            `
+          )
+          .join("");
       }
-    });
-  </script>
-</body>
+
+      function applyLanguage(lang) {
+        const t = content[lang];
+
+        document.documentElement.lang = lang === "zh" ? "zh-Hant" : "en";
+        docTitle.textContent = t.pageTitle;
+        metaDescription.setAttribute("content", t.metaDescription);
+
+        document.getElementById("brand-role").textContent = t.brandRole;
+        document.getElementById("nav-summary").textContent = t.nav.summary;
+        document.getElementById("nav-skills").textContent = t.nav.skills;
+        document.getElementById("nav-projects").textContent = t.nav.projects;
+        document.getElementById("nav-experience").textContent = t.nav.experience;
+
+        document.getElementById("hero-eyebrow").textContent = t.hero.eyebrow;
+        document.getElementById("hero-title").textContent = t.hero.title;
+        document.getElementById("hero-lead").textContent = t.hero.lead;
+        document.getElementById("hero-cta-primary").textContent = t.hero.ctaPrimary;
+        document.getElementById("hero-cta-secondary").textContent = t.hero.ctaSecondary;
+
+        document.getElementById("metric-1-value").textContent = t.hero.metrics[0].value;
+        document.getElementById("metric-1-label").textContent = t.hero.metrics[0].label;
+        document.getElementById("metric-2-value").textContent = t.hero.metrics[1].value;
+        document.getElementById("metric-2-label").textContent = t.hero.metrics[1].label;
+        document.getElementById("metric-3-value").textContent = t.hero.metrics[2].value;
+        document.getElementById("metric-3-label").textContent = t.hero.metrics[2].label;
+
+        document.getElementById("hero-side-title").textContent = t.heroSide.title;
+        document.getElementById("hero-side-body").textContent = t.heroSide.body;
+        document.getElementById("contact-title").textContent = t.labels.contact;
+        document.getElementById("portfolio-title").textContent = t.labels.portfolio;
+        document.getElementById("store-title").textContent = t.labels.store;
+
+        document.getElementById("projects-heading").textContent = t.projects.heading;
+        document.getElementById("projects-intro").textContent = t.projects.intro;
+        renderProjects(t.projects.items);
+
+        document.getElementById("summary-heading").textContent = t.summary.heading;
+        document.getElementById("summary-intro").textContent = t.summary.intro;
+        document.getElementById("summary-body").textContent = t.summary.body;
+        document.getElementById("focus-title").textContent = t.summary.focusTitle;
+        document.getElementById("tooling-title").textContent = t.summary.toolingTitle;
+        fillChipList("focus-list", t.summary.focus);
+        fillChipList("tooling-list", t.summary.tooling);
+
+        document.getElementById("skills-heading").textContent = t.skills.heading;
+        document.getElementById("skills-intro").textContent = t.skills.intro;
+        renderSkills(t.skills.items);
+
+        document.getElementById("experience-heading").textContent = t.experience.heading;
+        document.getElementById("experience-intro").textContent = t.experience.intro;
+        renderExperience(t.experience.items);
+
+        document.getElementById("background-heading").textContent = t.background.heading;
+        document.getElementById("background-intro").textContent = t.background.intro;
+        document.getElementById("education-title").textContent = t.background.educationTitle;
+        document.getElementById("certifications-title").textContent = t.background.certificationTitle;
+        document.getElementById("languages-title").textContent = t.background.languageTitle;
+        fillSimpleList("education-list", t.background.education);
+        fillSimpleList("certifications-list", t.background.certifications);
+        fillSimpleList("languages-list", t.background.languages);
+
+        document.getElementById("footer-copy").textContent = t.footer;
+
+        langButtons.forEach((button) => {
+          button.classList.toggle("active", button.dataset.lang === lang);
+          button.setAttribute("aria-pressed", button.dataset.lang === lang ? "true" : "false");
+        });
+
+        localStorage.setItem("preferred-language", lang);
+      }
+
+      langButtons.forEach((button) => {
+        button.addEventListener("click", () => applyLanguage(button.dataset.lang));
+      });
+
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            }
+          });
+        },
+        { threshold: 0.16 }
+      );
+
+      document.querySelectorAll(".reveal").forEach((node) => revealObserver.observe(node));
+
+      applyLanguage(detectLanguage());
+    </script>
+  </body>
 </html>
